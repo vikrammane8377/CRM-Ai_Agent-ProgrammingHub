@@ -50,20 +50,24 @@ MONGO_PASS = os.getenv("MONGODB_PASS")
 DB_NAME = os.getenv("MONGODB_DB_NAME", "xseries-crm")
 CONVERSATIONS_COLLECTION = os.getenv("MONGODB_CONVERSATIONS_COLLECTION", "conversations")
 
-# Encode username and password safely
-encoded_user = quote_plus(MONGO_USER) if MONGO_USER else ""
-encoded_pass = quote_plus(MONGO_PASS) if MONGO_PASS else ""
+# Use MONGODB_URI from .env if present, otherwise build it
+MONGODB_URI = os.getenv("MONGODB_URI")
+if not MONGODB_URI:
+    # Encode username and password safely
+    encoded_user = quote_plus(MONGO_USER) if MONGO_USER else ""
+    encoded_pass = quote_plus(MONGO_PASS) if MONGO_PASS else ""
 
-# Build final connection string
-if MONGO_USER and MONGO_PASS:
-    MONGODB_URI = f"mongodb://{encoded_user}:{encoded_pass}@{MONGO_HOST}/?authSource=admin"
-else:
-    MONGODB_URI = f"mongodb://{MONGO_HOST}/"
+    # Build MongoDB URI from environment variables if available
+    if MONGO_USER and MONGO_PASS:
+        # Authenticate against the 'admin' database, which is common practice
+        MONGODB_URI = f"mongodb://{encoded_user}:{encoded_pass}@{MONGO_HOST}/?authSource=admin"
+    else:
+        MONGODB_URI = f"mongodb://{MONGO_HOST}/"
 
 # Gmail API configuration
 SCOPES = ['https://www.googleapis.com/auth/gmail.modify', 'https://www.googleapis.com/auth/gmail.send']
-SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE', './credentials/service_account.json')
-IMPERSONATED_USER = os.getenv('IMPERSONATED_USER', 'crm-ph@individual-apps.iam.gserviceaccount.com')
+SERVICE_ACCOUNT_FILE = os.getenv('SERVICE_ACCOUNT_FILE', os.path.join(os.path.dirname(__file__), 'credentials', 'service_account.json'))
+IMPERSONATED_USER = os.getenv('IMPERSONATED_USER', 'admin@programminghub.io')
 
 # Define which exceptions we want to retry on
 RETRY_EXCEPTIONS = (
@@ -264,16 +268,20 @@ def clean_email_address(email: str) -> str:
 def get_gmail_service():
     """Initialize Gmail service using service account + domain-wide delegation"""
     try:
-        # Get the absolute path to the service account file
-        service_account_path = os.path.abspath(SERVICE_ACCOUNT_FILE)
-        
-        if not os.path.exists(service_account_path):
-            log_error(f"Service account file not found at: {service_account_path}")
-            raise FileNotFoundError(f"Service account file not found at: {service_account_path}")
-            
-        # Read the service account file
-        with open(service_account_path, 'r') as f:
-            service_account_info = json.load(f)
+        # Check if SERVICE_ACCOUNT_FILE is a file path or JSON string
+        if os.path.exists(SERVICE_ACCOUNT_FILE):
+            # Load from file
+            log_message(f"Loading service account from file: {SERVICE_ACCOUNT_FILE}")
+            with open(SERVICE_ACCOUNT_FILE, 'r') as f:
+                service_account_info = json.load(f)
+        else:
+            # Try to parse as JSON string
+            try:
+                log_message("Loading service account from JSON string")
+                service_account_info = json.loads(SERVICE_ACCOUNT_FILE)
+            except json.JSONDecodeError:
+                log_error(f"Service account is neither a valid file path nor JSON string: {SERVICE_ACCOUNT_FILE}")
+                raise ValueError(f"Invalid service account format: {SERVICE_ACCOUNT_FILE}")
             
         # Create credentials from the service account info
         creds = Credentials.from_service_account_info(
@@ -476,7 +484,20 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
             ).execute()
             
             messages = results.get('messages', [])
-            log_message(f"Found {len(messages) if messages else 0} unread message(s)")
+            log_message(f"Found {len(messages) if messages else 0} unread message(s) after start time")
+            
+            # If no messages found after start time, try to get the most recent unread email
+            if not messages:
+                log_message("No unread messages after start time, looking for most recent unread email")
+                query = 'is:unread'
+                results = service.users().messages().list(
+                    userId='me',
+                    q=query,
+                    maxResults=1
+                ).execute()
+                
+                messages = results.get('messages', [])
+                log_message(f"Found {len(messages) if messages else 0} unread message(s) total")
             
             if not messages:
                 return []
@@ -911,7 +932,7 @@ def email_monitor_loop():
             system_prompt = "You are a helpful assistant for an educational app's customer service."
         
         # Record start time 
-        start_time = int(time.time()) - 3600  # Look back 1 hour to process recent unread emails
+        start_time = 1716163200  # May 20th, 2025 at 00:00:00 UTC
         #log_message(f"Starting email monitor at {datetime.datetime.now().isoformat()}")
         #log_message(f"Looking for emails after {datetime.datetime.fromtimestamp(start_time)}")
         print(f"\nMonitoring emails sent to {IMPERSONATED_USER}")

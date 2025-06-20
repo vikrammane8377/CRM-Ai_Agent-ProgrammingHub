@@ -41,7 +41,8 @@ app = Flask(__name__)
 # Initialize shared services
 gmail_service = None
 system_prompt = None
-PROGRAM_START_TIME = int(time.time())
+# Set to May 20th, 2025 at 00:00:00 UTC
+PROGRAM_START_TIME = 1716163200  # May 20th, 2025 timestamp
 
 
 def initialize_services():

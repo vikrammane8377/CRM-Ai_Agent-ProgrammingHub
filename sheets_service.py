@@ -59,23 +59,26 @@ def log_error(message):
 def get_sheets_service():
     """Initialize Google Sheets service using service account credentials"""
     try:
-        # Check if the service account file exists as a file path
+        # Check if SERVICE_ACCOUNT_FILE is a file path or JSON string
         if os.path.exists(SERVICE_ACCOUNT_FILE):
+            # Load from file
+            log_message(f"Loading service account from file: {SERVICE_ACCOUNT_FILE}")
             creds = Credentials.from_service_account_file(
                 SERVICE_ACCOUNT_FILE,
                 scopes=SCOPES
             )
         else:
-            # If not a file path, try to parse it as JSON content
+            # Try to parse as JSON string
             try:
+                log_message("Loading service account from JSON string")
                 service_account_info = json.loads(SERVICE_ACCOUNT_FILE)
                 creds = Credentials.from_service_account_info(
                     service_account_info,
                     scopes=SCOPES
                 )
             except json.JSONDecodeError:
-                log_error(f"Invalid service account content: not a valid JSON string")
-                raise
+                log_error(f"Service account is neither a valid file path nor JSON string: {SERVICE_ACCOUNT_FILE}")
+                raise ValueError(f"Invalid service account format: {SERVICE_ACCOUNT_FILE}")
         
         # Build the Sheets API service
         service = build('sheets', 'v4', credentials=creds)
@@ -605,23 +608,26 @@ def get_drive_service():
         # Add Drive scope to existing scopes
         drive_scopes = SCOPES + ['https://www.googleapis.com/auth/drive.file']
         
-        # Check if the service account file exists as a file path
+        # Check if SERVICE_ACCOUNT_FILE is a file path or JSON string
         if os.path.exists(SERVICE_ACCOUNT_FILE):
+            # Load from file
+            log_message(f"Loading service account from file: {SERVICE_ACCOUNT_FILE}")
             creds = Credentials.from_service_account_file(
                 SERVICE_ACCOUNT_FILE,
                 scopes=drive_scopes
             )
         else:
-            # If not a file path, try to parse it as JSON content
+            # Try to parse as JSON string
             try:
+                log_message("Loading service account from JSON string")
                 service_account_info = json.loads(SERVICE_ACCOUNT_FILE)
                 creds = Credentials.from_service_account_info(
                     service_account_info,
                     scopes=drive_scopes
                 )
             except json.JSONDecodeError:
-                log_error(f"Invalid service account content: not a valid JSON string")
-                raise
+                log_error(f"Service account is neither a valid file path nor JSON string: {SERVICE_ACCOUNT_FILE}")
+                raise ValueError(f"Invalid service account format: {SERVICE_ACCOUNT_FILE}")
         
         # Build the Drive API service
         service = build('drive', 'v3', credentials=creds)

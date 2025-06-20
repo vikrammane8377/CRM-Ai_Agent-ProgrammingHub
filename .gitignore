@@ -1,4 +1,18 @@
-credentials/*
+# Environment variables
 .env
+
+# Credentials
+credentials/
+
+# Certificates
+certificates/
+
+# Docker
+.dockerignore
+
+# Python
 __pycache__/
 *.pyc
+
+# OS-specific
+.DS_Store

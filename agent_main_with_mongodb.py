@@ -13,12 +13,13 @@ import uuid
 import traceback
 from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
-from langchain.agents import AgentExecutor, create_openai_tools_agent
+from langchain.agents import AgentExecutor, create_openai_functions_agent
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.utils.function_calling import convert_to_openai_tool
 from langchain.tools import StructuredTool
 from sheets_service import log_certificate_issue, log_payment_issue, log_subscription_issue, log_refund_request, log_technical_issue, log_account_deletion, log_to_sheet
+import time
 
 # Import MongoDB memory system
 from mongodb_memory import MongoDBMemory, MongoDBChatMessageHistory
@@ -42,6 +43,7 @@ if not MONGODB_URI:
 
     # Build MongoDB URI from environment variables if available
     if MONGO_USER and MONGO_PASS:
+        # Authenticate against the 'admin' database, which is common practice
         MONGODB_URI = f"mongodb://{encoded_user}:{encoded_pass}@{MONGO_HOST}/?authSource=admin"
     else:
         MONGODB_URI = f"mongodb://{MONGO_HOST}/"
@@ -249,12 +251,10 @@ def activate_premium(emailid: str, app_name: str) -> str:
         current_time_ms = int(time.time() * 1000)
         expiry_time_ms = current_time_ms + (365 * 24 * 60 * 60 * 1000)  # Roughly 1 year in ms
         
-        # Prepare the API request
-        url = "https://api.programminghub.io/v2/api/auth/addProUser"
+        # Prepare the API request with new endpoint
+        url = "https://api-prod.programminghub.io/v5/api/auth/pro/add"
         headers = {
-            'Content-Type': 'application/json',
-            'app': app_name,         
-            'appname': app_name
+            'Content-Type': 'application/json'
         }
         
         payload = {
@@ -510,7 +510,6 @@ def create_shared_agent(openai_api_key=None):
     
     # Convert the tools to OpenAI's format
     tools = [order_details_tool, certificate_tool, premium_tool, logging_tool, multi_certificate_tool]
-    tools_for_agent = [convert_to_openai_tool(tool) for tool in tools]
     
     # Read the system prompt from file
     try:
@@ -531,8 +530,8 @@ def create_shared_agent(openai_api_key=None):
         MessagesPlaceholder(variable_name="agent_scratchpad")
     ])
     
-    # Create the agent
-    agent = create_openai_tools_agent(llm, tools_for_agent, prompt)
+    # Create the agent - pass the original tools, not the converted ones
+    agent = create_openai_functions_agent(llm, tools, prompt)
     
     return agent, tools
 
