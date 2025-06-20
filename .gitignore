@@ -4,9 +4,6 @@
 # Credentials
 credentials/
 
-# Certificates
-certificates/
-
 # Docker
 .dockerignore
 
