@@ -28,25 +28,12 @@ from mongodb_memory import MongoDBMemory, MongoDBChatMessageHistory
 load_dotenv()
 
 # MongoDB configuration
-MONGO_HOST = os.getenv("MONGODB_HOST", "localhost:27017")
-MONGO_USER = os.getenv("MONGODB_USER")
-MONGO_PASS = os.getenv("MONGODB_PASS")
 DB_NAME = os.getenv("MONGODB_DB_NAME", "xseries-crm")
 CONVERSATIONS_COLLECTION = os.getenv("MONGODB_CONVERSATIONS_COLLECTION", "conversations")
 
 # Use MONGODB_URI from .env if present, otherwise build it
 MONGODB_URI = os.getenv("MONGODB_URI")
-if not MONGODB_URI:
-    # Encode username and password safely
-    encoded_user = quote_plus(MONGO_USER) if MONGO_USER else ""
-    encoded_pass = quote_plus(MONGO_PASS) if MONGO_PASS else ""
 
-    # Build MongoDB URI from environment variables if available
-    if MONGO_USER and MONGO_PASS:
-        # Authenticate against the 'admin' database, which is common practice
-        MONGODB_URI = f"mongodb://{encoded_user}:{encoded_pass}@{MONGO_HOST}/?authSource=admin"
-    else:
-        MONGODB_URI = f"mongodb://{MONGO_HOST}/"
 
 # Get OpenAI API key from environment
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
