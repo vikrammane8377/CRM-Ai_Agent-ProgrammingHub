@@ -267,7 +267,7 @@ def activate_premium(emailid: str, app_name: str) -> str:
         
         if response.status_code == 200:
             print(f"Premium activation successful for {emailid} on {app_name}")
-            return f"Premium access has been successfully activated for {emailid} on {app_name}. The premium features will be available immediately, and the subscription is valid for 12 months."
+            return f"Premium access has been successfully activated for {emailid} on {app_name}. The premium features will be available immediately, and the subscription is valid for lifetime."
         else:
             return f"Premium activation failed: {response_data.get('message', 'Unknown error')}. Please try again later."
         

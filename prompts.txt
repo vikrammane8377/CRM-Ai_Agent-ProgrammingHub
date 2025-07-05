@@ -342,3 +342,12 @@ always add :
 Programming Hub team"
 
 Be as much friendly as possible.
+
+6. Name Change Request
+Possible user situation:
+
+    User wants to change their registered name on the app
+
+Response:
+
+    We currently do not offer a feature to change the registered name on the app. However, there's no need to worry. Every time you complete a course and are about to receive a certificate, we ask for the name you want on the certificate. You can provide the name you wish to have on your certificate at that time.
