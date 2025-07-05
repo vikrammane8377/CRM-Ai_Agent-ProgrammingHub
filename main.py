@@ -5,7 +5,7 @@ import os
 import sys
 import traceback
 import json
-from datetime import datetime, timedelta
+from datetime import datetime
 from flask import Flask, request, jsonify
 from dotenv import load_dotenv
 from gmail_mongodb_integration import (
@@ -42,7 +42,7 @@ app = Flask(__name__)
 gmail_service = None
 system_prompt = None
 # Set to May 20th, 2025 at 00:00:00 UTC
-PROGRAM_START_TIME = int(datetime.datetime(2025, 5, 20).timestamp())
+PROGRAM_START_TIME = int(datetime(2025, 5, 20).timestamp())
 
 
 def initialize_services():
