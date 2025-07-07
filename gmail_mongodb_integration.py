@@ -461,33 +461,47 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
                 PROGRAM_START_TIME = int(time.time())
             start_time = PROGRAM_START_TIME
         
-        # Convert timestamp to Gmail's expected date format (YYYY/MM/DD)
+        # Convert timestamp to both date format and Unix timestamp for comparison
         start_date = datetime.fromtimestamp(start_time)
         date_str = start_date.strftime('%Y/%m/%d')
         
         log_message("\nFETCHING NEW EMAILS")
         log_message(f"Looking for emails after: {start_date}")
-        log_message(f"Using date string: {date_str}")
+        log_message(f"Using Unix timestamp: {start_time}")
         
         try:
-            # Use Gmail's date format instead of timestamp
-            query = f'is:unread after:{date_str}'
+            # Use Unix timestamp (more accurate than date format)
+            query = f'is:unread after:{start_time}'
             log_message(f"Gmail query: '{query}'")
             
-            # Get only the specified number of messages (default is 1)
+            # Get only 1 message (the latest)
             results = service.users().messages().list(
                 userId='me',
                 q=query,
-                maxResults=max_results
+                maxResults=1
             ).execute()
             
             messages = results.get('messages', [])
-            log_message(f"Found {len(messages) if messages else 0} unread message(s) after {date_str}")
+            log_message(f"Found {len(messages) if messages else 0} unread message(s)")
             
-            # REMOVED: Don't fall back to any unread email if none found after date
-            # This allows it to properly process older emails in sequence
+            # If Unix timestamp didn't work, try the date format as fallback
             if not messages:
-                log_message(f"No unread messages found after {date_str}")
+                log_message("Unix timestamp query returned no results, trying date format...")
+                query = f'is:unread after:{date_str}'
+                log_message(f"Gmail query (date format): '{query}'")
+                
+                results = service.users().messages().list(
+                    userId='me',
+                    q=query,
+                    maxResults=1
+                ).execute()
+                
+                messages = results.get('messages', [])
+                log_message(f"Found {len(messages) if messages else 0} unread message(s) with date format")
+            
+            # If still no messages found, return empty
+            if not messages:
+                log_message("No unread messages found after the specified date")
                 return []
                 
         except Exception as e:
@@ -530,7 +544,7 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
             # Log message details for debugging
             log_message(f"Processing message: ID={message['id']}, From={sender}, Subject={subject}, Date={date}")
             log_message(f"Message timestamp: {message_timestamp} ({datetime.fromtimestamp(message_timestamp)})")
-
+            
             # Only process emails that weren't sent by the system itself
             if not from_self:
                 # Pass thread_id to get_full_email_content
