@@ -58,7 +58,7 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
             "content": message.content
         }
 
-        now = datetime.datetime.now(datetime.timezone.utc)
+        now = datetime.now(timezone.utc)
 
         conversation = self.collection.find_one({
             "thread_id": self.thread_id
@@ -131,7 +131,7 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
             {
                 "$set": {
                     "metadata": metadata,
-                    "last_updated": datetime.datetime.now(datetime.timezone.utc)
+                    "last_updated": datetime.now(timezone.utc)
                 }
             },
             upsert=True
