@@ -109,6 +109,7 @@ IMPORTANT: Replace [USER_ORDER_ID] with the order ID provided by the user.
 IMPORTANT: When asking for order ID, inform the user that you're including reference images showing where to find it. Add this text to your response: "I've attached images to this email showing how to find your order ID on both iOS and Android devices."
 
 IMPORTANT: When acknowledging a receipt image/attachment, say: "I can see you've provided an image of your receipt. I'll check if it contains your order ID (which typically starts with 'GPA.'), Until then please provide the above details."
+IMPORTANT :After activating your premium subscription, please make sure to log out and log back into your account for the changes to reflect in the app.
 3. Refund Request
 Possible user situation:
 

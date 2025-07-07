@@ -16,6 +16,9 @@ import time
 import json
 import uuid
 import datetime
+
+# Or if you prefer to be more specific:
+from datetime import datetime, timezone
 import base64
 import re
 import traceback
@@ -45,8 +48,7 @@ load_dotenv()
 from urllib.parse import quote_plus
 
 # At the top of gmail_mongodb_integration.py
-JUNE_20_START_TIME = int(datetime.datetime(2024, 6, 20).timestamp())
-
+JUNE_20_START_TIME = int(datetime(2024, 6, 20).timestamp())
 
 DB_NAME = os.getenv("MONGODB_DB_NAME", "xseries-crm")
 CONVERSATIONS_COLLECTION = os.getenv("MONGODB_CONVERSATIONS_COLLECTION", "conversations")
@@ -111,7 +113,7 @@ def upload_screenshot_to_drive(image_data, sender_email, thread_id, attachment_i
     """Upload screenshot to Google Drive and return the file's web view link"""
     try:
         # Generate a descriptive filename
-        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         safe_email = re.sub(r'[^\w]', '_', sender_email)
         safe_thread_id = re.sub(r'[^\w]', '_', thread_id)
         filename = f"Screenshot_{safe_email}_{timestamp}_{attachment_index}.png"
@@ -460,7 +462,7 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
             start_time = PROGRAM_START_TIME
         
         # Convert timestamp to Gmail's expected date format (YYYY/MM/DD)
-        start_date = datetime.datetime.fromtimestamp(start_time)
+        start_date = datetime.fromtimestamp(start_time)
         date_str = start_date.strftime('%Y/%m/%d')
         
         log_message("\nFETCHING NEW EMAILS")
@@ -527,8 +529,8 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
             
             # Log message details for debugging
             log_message(f"Processing message: ID={message['id']}, From={sender}, Subject={subject}, Date={date}")
-            log_message(f"Message timestamp: {message_timestamp} ({datetime.datetime.fromtimestamp(message_timestamp)})")
-            
+            log_message(f"Message timestamp: {message_timestamp} ({datetime.fromtimestamp(message_timestamp)})")
+
             # Only process emails that weren't sent by the system itself
             if not from_self:
                 # Pass thread_id to get_full_email_content
@@ -830,7 +832,7 @@ def process_email(email_data, system_prompt):
         # Update metadata fields individually to preserve other fields (like screenshot_drive_links)
         memory.update_metadata_field('subject', subject)
         memory.update_metadata_field('sender_name', sender)
-        memory.update_metadata_field('last_updated', datetime.datetime.now().isoformat())
+        memory.update_metadata_field('last_updated', datetime.now().isoformat())
         memory.update_metadata_field('status', 'In Progress')
         
         # Process the email content with the shared agent
@@ -863,7 +865,7 @@ def process_email(email_data, system_prompt):
         
         # Update metadata fields individually for response status to preserve other fields
         memory.update_metadata_field('last_response', response[:100] + "..." if len(response) > 100 else response)
-        memory.update_metadata_field('last_response_time', datetime.datetime.now().isoformat())
+        memory.update_metadata_field('last_response_time', datetime.now().isoformat())
         memory.update_metadata_field('status', 'Responded')
         
         # Prepare result before cleanup
