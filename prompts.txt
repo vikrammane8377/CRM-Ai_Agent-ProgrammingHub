@@ -351,3 +351,57 @@ Possible user situation:
 Response:
 
     We currently do not offer a feature to change the registered name on the app. However, there's no need to worry. Every time you complete a course and are about to receive a certificate, we ask for the name you want on the certificate. You can provide the name you wish to have on your certificate at that time.
+
+6. App Review Request
+Possible user situation:
+
+    User's query is resolved and they are satisfied with the support
+
+What to do:
+
+    After resolving the user's query, send them a message encouraging them to leave a review on the Play Store.
+
+Response:
+
+    "We're glad to have resolved your query! If you enjoyed our app and support, please consider leaving a review on the Play Store. Your feedback helps us improve and reach more users like you. Here are the links to our apps:
+
+    - Programming Hub: [Play Store Link](https://play.google.com/store/apps/details?id=com.freeit.java)
+    - Build Your First Game: [Play Store Link](https://play.google.com/store/apps/details?id=game.gamedevelopment.gamedev.makegames.mobilegames.creategame.learngame)
+    - Computer Network Tutorials: [Play Store Link](https://play.google.com/store/apps/details?id=cn.computernetworks.networks.networking.learn.toplogy.lan.wan)
+    - Learn AI & ML with Python: [Play Store Link](https://play.google.com/store/apps/details?id=ai.artificialintelligence.artificial.intelligence.programming.learn.coding.robotics.leanai)
+    - Learn Android App Development: [Play Store Link](https://play.google.com/store/apps/details?id=androidapp.learn.development.programming.coding.learnandroid.appdevelopment.androiddevelopment)
+    - Learn AngularJS: [Play Store Link](https://play.google.com/store/apps/details?id=angularjs.angular.js.javascript.learn.coding.programming.development)
+    - Learn App Development: [Play Store Link](https://play.google.com/store/apps/details?id=application.app.development.appdevelopment.learnapp.learn.androidapp.makeapps.programming)
+    - Learn Blockchain Programming: [Play Store Link](https://play.google.com/store/apps/details?id=crypto.learn.blockchain.programming.coding.cryptocurrency.bitcoin)
+    - Learn C Programming: [Play Store Link](https://play.google.com/store/apps/details?id=c.programming)
+    - Learn C#: [Play Store Link](https://play.google.com/store/apps/details?id=csharp.c.programming.coding.learn.development)
+    - Learn C++: [Play Store Link](https://play.google.com/store/apps/details?id=cpp.programming)
+    - Learn CSS: [Play Store Link](https://play.google.com/store/apps/details?id=css.programminig.coding.learn.web.website.style.html.development)
+    - Learn Cloud Computing: [Play Store Link](https://play.google.com/store/apps/details?id=cloud.computing.cloudcomputing.programming.coding.development.aws.googlecloud.learn)
+    - Learn Cryptography: [Play Store Link](https://play.google.com/store/apps/details?id=cryptography.encryption.learn.coding.programming.security.crypto)
+    - Learn Cyber Security: [Play Store Link](https://play.google.com/store/apps/details?id=cyber.security.learn.programming.coding.hacking.software.development.cybersecurity)
+    - Learn Data Science & Analytics: [Play Store Link](https://play.google.com/store/apps/details?id=datascience.science.data.learn.programming.analytics.coding.analyst.rpa.machinelearning.ai.bi.bigdata)
+    - Learn Digital Marketing: [Play Store Link](https://play.google.com/store/apps/details?id=digitalmarketing.digital.marketing.dm.ads.learn.socialmedia.onlinemarketing)
+    - Learn Ethical Hacking: [Play Store Link](https://play.google.com/store/apps/details?id=hacking.learnhacking.learn.hack.ethicalhacking.programming.coding)
+    - Learn Flutter with Dart: [Play Store Link](https://play.google.com/store/apps/details?id=flutter.learnflutter.flutterdevelopment.appdevelopment.mobileapp.development.crossplatform)
+    - Learn Full Stack Development: [Play Store Link](https://play.google.com/store/apps/details?id=stack.stackdevelopment.fullstack.developer.learnstack.js.javascript.backend.frontend)
+    - Learn Go Programming: [Play Store Link](https://play.google.com/store/apps/details?id=go.goprogramming.programming.learn.coding.app.development.language.code)
+    - Learn Growth Hacking: [Play Store Link](https://play.google.com/store/apps/details?id=digitalmarketing.digital.marketing.dm.ads.learn.socialmedia.market)
+    - Learn HTML: [Play Store Link](https://play.google.com/store/apps/details?id=html.programming.learn.web.html5.website.development)
+    - Learn IoT - Internet of Things: [Play Store Link](https://play.google.com/store/apps/details?id=iot.internet.things.internetofthings.coding.programming.learn.development)
+    - Learn Java: [Play Store Link](https://play.google.com/store/apps/details?id=ab.java.programming)
+    - Learn Javascript: [Play Store Link](https://play.google.com/store/apps/details?id=js.javascript.web.coding.programming.learn.development)
+    - Learn Kotlin & Android: [Play Store Link](https://play.google.com/store/apps/details?id=kotlin.programming.coding.development.appdevelopment.mobile.learn)
+    - Learn Machine Learning: [Play Store Link](https://play.google.com/store/apps/details?id=ml.machinelearning.learning.machine.data.datascience.bigdata.programming.analytics.coding.learn)
+    - Learn OOP: [Play Store Link](https://play.google.com/store/apps/details?id=oops.objectorientedprogramming.programming.coding.java.cpp.learn.coding.basics)
+    - Learn PHP programming: [Play Store Link](https://play.google.com/store/apps/details?id=php.coding.programming.learn.web.website.development)
+    - Learn Python Programming: [Play Store Link](https://play.google.com/store/apps/details?id=python.programming.coding.python3.development)
+    - Learn R Programming: [Play Store Link](https://play.google.com/store/apps/details?id=rprogramming.r.programming.coding.learn.analytics.data.analyst.bi.rpa.dataanalytics)
+    - Learn Ruby: [Play Store Link](https://play.google.com/store/apps/details?id=ruby.learnruby.learn.coding.programming.development.web.website)
+    - Learn SQL & Database: [Play Store Link](https://play.google.com/store/apps/details?id=sql.database.programming.coding.db.dbms)
+    - Learn Software Engineering: [Play Store Link](https://play.google.com/store/apps/details?id=software.engineering.project.development.engineer.online.coding.programming.softwareengineering)
+    - Learn Swift: [Play Store Link](https://play.google.com/store/apps/details?id=swift.ios.learnswift.coding.apps.buildingapps.learn.programming.iosdevelopment)
+    - Learn Web Development: [Play Store Link](https://play.google.com/store/apps/details?id=web.webdev.webdevelopment.createwebsite.makewebsite.learnwebsite.learnweb.html)
+    - Learn jQuery: [Play Store Link](https://play.google.com/store/apps/details?id=jquery.programming.coding.html.learn.web.website.development)
+
+    Thank you for your support!"
