@@ -44,6 +44,9 @@ load_dotenv()
 # MongoDB configuration
 from urllib.parse import quote_plus
 
+# At the top of gmail_mongodb_integration.py
+JUNE_20_START_TIME = int(datetime.datetime(2024, 6, 20).timestamp())
+
 
 DB_NAME = os.getenv("MONGODB_DB_NAME", "xseries-crm")
 CONVERSATIONS_COLLECTION = os.getenv("MONGODB_CONVERSATIONS_COLLECTION", "conversations")
@@ -428,6 +431,7 @@ def mark_message_as_read(service, message_id):
         log_error(f"Error marking message {message_id} as read: {str(e)}")
         return False
 
+
 @retry(
     retry=retry_if_exception_type(RETRY_EXCEPTIONS),
     wait=wait_exponential(multiplier=1, min=4, max=10),
@@ -455,39 +459,35 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
                 PROGRAM_START_TIME = int(time.time())
             start_time = PROGRAM_START_TIME
         
+        # Convert timestamp to Gmail's expected date format (YYYY/MM/DD)
+        start_date = datetime.datetime.fromtimestamp(start_time)
+        date_str = start_date.strftime('%Y/%m/%d')
+        
         log_message("\nFETCHING NEW EMAILS")
-        log_message(f"Looking for emails after: {datetime.datetime.fromtimestamp(start_time)}")
+        log_message(f"Looking for emails after: {start_date}")
+        log_message(f"Using date string: {date_str}")
         
         try:
-            # Use a modified query to check for UNREAD emails after the start timestamp
-            query = f'is:unread after:{int(start_time)}'
+            # Use Gmail's date format instead of timestamp
+            query = f'is:unread after:{date_str}'
             log_message(f"Gmail query: '{query}'")
             
             # Get only the specified number of messages (default is 1)
             results = service.users().messages().list(
                 userId='me',
                 q=query,
-                maxResults=max_results  # This ensures we only get the latest email
+                maxResults=max_results
             ).execute()
             
             messages = results.get('messages', [])
-            log_message(f"Found {len(messages) if messages else 0} unread message(s) after start time")
+            log_message(f"Found {len(messages) if messages else 0} unread message(s) after {date_str}")
             
-            # If no messages found after start time, try to get the most recent unread email
+            # REMOVED: Don't fall back to any unread email if none found after date
+            # This allows it to properly process older emails in sequence
             if not messages:
-                log_message("No unread messages after start time, looking for most recent unread email")
-                query = 'is:unread'
-                results = service.users().messages().list(
-                    userId='me',
-                    q=query,
-                    maxResults=1
-                ).execute()
-                
-                messages = results.get('messages', [])
-                log_message(f"Found {len(messages) if messages else 0} unread message(s) total")
-            
-            if not messages:
+                log_message(f"No unread messages found after {date_str}")
                 return []
+                
         except Exception as e:
             log_error(f"Error listing messages: {str(e)}")
             return []
@@ -517,11 +517,17 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
             # Get message timestamp in seconds
             message_timestamp = int(msg['internalDate']) // 1000
             
+            # Double-check the timestamp is actually after our start time
+            if message_timestamp < start_time:
+                log_message(f"Message {message['id']} timestamp {message_timestamp} is before start time {start_time}, skipping")
+                return []
+            
             # Check if this is a message sent by our system
             from_self = IMPERSONATED_USER.lower() in sender.lower()
             
             # Log message details for debugging
             log_message(f"Processing message: ID={message['id']}, From={sender}, Subject={subject}, Date={date}")
+            log_message(f"Message timestamp: {message_timestamp} ({datetime.datetime.fromtimestamp(message_timestamp)})")
             
             # Only process emails that weren't sent by the system itself
             if not from_self:
@@ -728,7 +734,6 @@ def get_mongodb_memory(user_email, thread_id):
     try:
         # Create MongoDB memory for this conversation
         memory = MongoDBMemory(
-            connection_string=MONGODB_URI,
             db_name=DB_NAME,
             collection_name=CONVERSATIONS_COLLECTION,
             user_email=user_email,
@@ -919,7 +924,7 @@ def email_monitor_loop():
             system_prompt = "You are a helpful assistant for an educational app's customer service."
         
         # Record start time 
-        start_time = 1716163200  # May 20th, 2025 at 00:00:00 UTC
+        start_time = JUNE_20_START_TIME  # May 20th, 2025 at 00:00:00 UTC
         #log_message(f"Starting email monitor at {datetime.datetime.now().isoformat()}")
         #log_message(f"Looking for emails after {datetime.datetime.fromtimestamp(start_time)}")
         print(f"\nMonitoring emails sent to {IMPERSONATED_USER}")

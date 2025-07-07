@@ -1,30 +1,37 @@
-from typing import Dict, List, Any, Optional
-import datetime
 from pymongo import MongoClient
+from dotenv import load_dotenv
+import os
 from langchain.memory import ConversationBufferMemory
 from langchain.schema import BaseChatMessageHistory
 from langchain.schema.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
 from html import unescape
 import re
+from urllib.parse import quote_plus
+from typing import List, Any, Optional, Dict
+
+# Load environment variables
+load_dotenv()
+
+# Get the MongoDB URI from the environment
+MONGODB_URI = os.getenv('MONGODB_URI')
 
 class MongoDBChatMessageHistory(BaseChatMessageHistory):
     """Chat message history stored in MongoDB with a simplified document structure."""
 
     def __init__(
         self,
-        connection_string: str,
         db_name: str,
         collection_name: str,
         user_email: str,
         thread_id: str,
     ):
-        self.connection_string = connection_string
+        self.connection_string = MONGODB_URI
         self.db_name = db_name
         self.collection_name = collection_name
         self.user_email = user_email
         self.thread_id = thread_id
 
-        self.client = MongoClient(connection_string)
+        self.client = MongoClient(self.connection_string)
         self.db = self.client[db_name]
         self.collection = self.db[collection_name]
 
@@ -134,7 +141,6 @@ class MongoDBMemory(ConversationBufferMemory):
 
     def __init__(
         self,
-        connection_string: str,
         db_name: str,
         collection_name: str,
         user_email: str,
@@ -147,7 +153,6 @@ class MongoDBMemory(ConversationBufferMemory):
         ai_prefix: str = "AI",
     ):
         message_history = MongoDBChatMessageHistory(
-            connection_string=connection_string,
             db_name=db_name,
             collection_name=collection_name,
             user_email=user_email,
