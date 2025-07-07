@@ -8,6 +8,8 @@ from html import unescape
 import re
 from urllib.parse import quote_plus
 from typing import List, Any, Optional, Dict
+from datetime import datetime, timezone
+
 
 # Load environment variables
 load_dotenv()
@@ -116,7 +118,7 @@ class MongoDBChatMessageHistory(BaseChatMessageHistory):
             {
                 "$set": {
                     f"metadata.{field}": value,
-                    "last_updated": datetime.datetime.now(datetime.timezone.utc)
+                    "last_updated": datetime.now(timezone.utc)
                 }
             },
             upsert=True
