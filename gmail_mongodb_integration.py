@@ -442,15 +442,6 @@ def mark_message_as_read(service, message_id):
 def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_results=1):
     """
     Fetch only the latest unread email received after the given time.
-    
-    Args:
-        service: Gmail API service object
-        start_time: Timestamp to look for emails after (defaults to program start time)
-        mark_as_read: Whether to mark messages as read during fetching
-        max_results: Maximum number of emails to fetch (default: 1 for latest only)
-        
-    Returns:
-        List of email details dictionaries
     """
     try:
         # Use a global variable to store program start time if not already set
@@ -470,8 +461,8 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
         log_message(f"Using Unix timestamp: {start_time}")
         
         try:
-            # Use Unix timestamp (more accurate than date format)
-            query = f'is:unread after:{start_time}'
+            # Use date format (Gmail API requires this format)
+            query = f'is:unread after:{date_str} -from:{IMPERSONATED_USER}'
             log_message(f"Gmail query: '{query}'")
             
             # Get only 1 message (the latest)
@@ -483,29 +474,14 @@ def fetch_emails_after_time(service, start_time=None, mark_as_read=False, max_re
             
             messages = results.get('messages', [])
             log_message(f"Found {len(messages) if messages else 0} unread message(s)")
-            
-            # If Unix timestamp didn't work, try the date format as fallback
-            if not messages:
-                log_message("Unix timestamp query returned no results, trying date format...")
-                query = f'is:unread after:{date_str}'
-                log_message(f"Gmail query (date format): '{query}'")
-                
-                results = service.users().messages().list(
-                    userId='me',
-                    q=query,
-                    maxResults=1
-                ).execute()
-                
-                messages = results.get('messages', [])
-                log_message(f"Found {len(messages) if messages else 0} unread message(s) with date format")
-            
-            # If still no messages found, return empty
-            if not messages:
-                log_message("No unread messages found after the specified date")
-                return []
                 
         except Exception as e:
             log_error(f"Error listing messages: {str(e)}")
+            return []
+
+        # If no messages found, return empty
+        if not messages:
+            log_message("No unread messages found after the specified date")
             return []
 
         email_details = []

@@ -3,6 +3,7 @@
 import gc
 import os
 import sys
+from gmail_mongodb_integration import JUNE_20_START_TIME
 import traceback
 import json
 from datetime import datetime

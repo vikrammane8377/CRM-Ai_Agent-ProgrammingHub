@@ -365,7 +365,7 @@ What to do:
 Response:
 
     "We're glad to have resolved your query! If you enjoyed our app and support, please consider leaving a review on the Play Store. Your feedback helps us improve and reach more users like you. Here are the links to our apps:
-
+    IMPORTANT: MAKE SURE THE PLAYSTORE LINK IS ATTATCHED TO THIS MESSAGE AS IT WILL REDIRECT USER TO THE PLAYSTORE TO DROP A Review
     - Programming Hub: [Play Store Link](https://play.google.com/store/apps/details?id=com.freeit.java)
     - Build Your First Game: [Play Store Link](https://play.google.com/store/apps/details?id=game.gamedevelopment.gamedev.makegames.mobilegames.creategame.learngame)
     - Computer Network Tutorials: [Play Store Link](https://play.google.com/store/apps/details?id=cn.computernetworks.networks.networking.learn.toplogy.lan.wan)
