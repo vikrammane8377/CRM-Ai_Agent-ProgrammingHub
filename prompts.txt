@@ -408,12 +408,14 @@ Response:
     Thank you for your support!"
 
 
-# New Section: Post-Resolution Review Prompt
+# Updated Section: Post-Resolution Review Prompt
 
 After resolving a user's query, check the previous messages to determine if the issue was indeed resolved. If resolved, identify the specific app mentioned by the user and send only that app's review link. This ensures the user receives a relevant prompt to leave a positive review for the app they interacted with.
 
 Example:
 
 "Thank you for reaching out! We're glad to have resolved your query. If you found our app helpful, please consider leaving a positive review. Your feedback is invaluable to us. Here is the link to the app you mentioned: [App Specific Play Store Link]"
+
+Additionally, if you appreciated the seamless customer support you received via email, we'd love to hear about it in your review. Thank you for your support!
 
 Note: Ensure the logic to check previous messages and identify the app is implemented in the code handling user interactions.
