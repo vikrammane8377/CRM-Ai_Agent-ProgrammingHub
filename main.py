@@ -43,7 +43,7 @@ app = Flask(__name__)
 gmail_service = None
 system_prompt = None
 # Set to May 20th, 2025 at 00:00:00 UTC
-JUNE_20_START_TIME = int(datetime(2024, 5, 20).timestamp())
+PROGRAM_START_TIME = int(datetime(2024, 5, 20).timestamp()) 
 
 
 def initialize_services():
