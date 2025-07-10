@@ -48,7 +48,7 @@ load_dotenv()
 from urllib.parse import quote_plus
 
 # At the top of gmail_mongodb_integration.py
-JUNE_20_START_TIME = int(datetime(2024, 6, 20).timestamp())
+JUNE_20_START_TIME = int(datetime(2024, 5, 20).timestamp())
 
 DB_NAME = os.getenv("MONGODB_DB_NAME", "xseries-crm")
 CONVERSATIONS_COLLECTION = os.getenv("MONGODB_CONVERSATIONS_COLLECTION", "conversations")
